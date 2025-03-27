@@ -5,7 +5,7 @@ Feedybacky
 
 Feedybacky is simple JS plugin for web pages which facilitates feedback system. It creates a sliding element on HTML page in which a user can provide a request (error, suggest, comment etc.) and send it in rapid and easy way. The special part of this process is the fact, that Feedybacky allows to attach a screenshot of the current page and additional information **automatically**. It includes i.a. current URL, user agent string and - of course - current datetime. In many situations, request's text provided by a user is not sufficient to reproduce e.g. an error - Feedybacky tries to solve that problem.
 
-Feedybacky uses `html2canvas` library created by Niklas von Hertzen.
+Feedybacky uses `html2canvas` library created by Niklas von Hertzen and `dom-to-image` library created by Anatolii Saienko and Paul Bakaus.
 
 ### Installation ###
 
@@ -63,7 +63,8 @@ var feedybacky = new Feedybacky('feedybacky-container', {
 		],
 		"scripts": [
 			//...
-			"node_modules/feedybacky/dependencies/html2canvas/html2canvas.min.js"
+			"node_modules/feedybacky/dependencies/html2canvas/html2canvas.min.js",
+			"node_modules/feedybacky/dependencies/domtoimage/dom-to-image.min.js"
 		]
 	}
 }
@@ -96,6 +97,7 @@ const feedybacky = new Feedybacky('feedybacky-container', {
 ```ts
 import 'feedybacky/css/feedybacky.min.css';
 import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
+import 'feedybacky/dependencies/domtoimage/dom-to-image.min.js';
 ```
 
 #### React ####
@@ -108,6 +110,7 @@ import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
 import { Feedybacky } from 'feedybacky';
 import 'feedybacky/css/feedybacky.min.css';
 import 'feedybacky/dependencies/html2canvas/html2canvas.min.js';
+import 'feedybacky/dependencies/domtoimage/dom-to-image.min.js';
 
 new Feedybacky('feedybacky-container', {
   onSubmitUrl: url
@@ -260,7 +263,7 @@ beforeSubmit: (payload) => {
 
 `allowedThemes` - optional parameter with array of possible themes which can be set at init of the form as well as in runtime. The default value is `['default', 'dark']`.
 
-`screenshotMethod` - optional parameter for setting a screenshot method. Default value is `html2canvas` and it uses HTML2Canvas library for taking a screenshot from whole page. There are situations in which this method would cause errors, simply does not work (for example on Safari) or the user should has choice of what window should be perpetuated. For such cases, `mediaDevice` method could be set what uses appropriate browser's media mechanism.
+`screenshotMethod` is an optional parameter for setting the screenshot method. The default value is `html2canvas`, which uses the HTML2Canvas library to capture a screenshot of the entire page. There are situations where this method may cause errors, not work properly (e.g., in Safari), or when the user should have the choice of which part of the window to capture. In such cases, alternative methods can be set: `domtoimage`, which uses the `dom-to-image` library to capture HTML elements rather than the entire page, or `mediaDevice`, which leverages the browser’s media capture mechanism for more advanced screenshot functionality.
 
 `allowScreenshotModification` - optional parameter for enabling a screenshot modification tool. If it is on and the screenshot checkbox is checked, the appropriate button is visible and allows to precapture a screenshot of an actual screen and mark interesting places on it. Then the resulted screenshot will be enhanced by these drawings. Default value is `true`.
 

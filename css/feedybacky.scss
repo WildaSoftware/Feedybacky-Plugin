@@ -245,7 +245,7 @@ $colorGrey: #aaaaaa;
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 90%;
     overflow: auto;
     background-color: $colorBlackWithAlpha;
 
@@ -254,6 +254,7 @@ $colorGrey: #aaaaaa;
 		background-color: $colorWhiteTotal;
 		margin: auto;
 		border: 1px solid $colorBlackSoft;
+		margin-bottom: 100px;
 		width: 80%;
 
 		#feedybacky-canvas-container {			

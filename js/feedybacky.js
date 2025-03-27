@@ -39,7 +39,8 @@ const standardThemes = [defaultTheme, darkTheme];
 
 const screenshotMethodHtml2Canvas = 'html2canvas';
 const screenshotMethodMediaDevice = 'mediaDevice';
-const allowedScreenshotMethods = [screenshotMethodHtml2Canvas, screenshotMethodMediaDevice];
+const screenshotMethodDomToImage = 'domToImage';
+const allowedScreenshotMethods = [screenshotMethodHtml2Canvas, screenshotMethodMediaDevice, screenshotMethodDomToImage];
 
 const messageTypeText = 'text';
 const messageTypeVoice = 'voice';
@@ -895,6 +896,29 @@ class Feedybacky {
         }
     }
 
+    getScreenshotMethodDomToImage() {
+        return new Promise((resolve) => {
+            let currentScrollPos = window.pageYOffset;
+
+            domtoimage.toPng(document.body, {
+                filter: (node) => {
+                    return node.id !== 'feedybacky-container';
+                },
+                bgcolor: 'white'
+            })
+            .then(dataUrl => {
+                navigator.clipboard.writeText(dataUrl);
+                window.scrollTo(0, currentScrollPos);
+
+                resolve(dataUrl);
+            })
+            .catch(error => {
+                console.error('Error capturing screenshot with dom-to-image:', error);
+                reject(error);
+            });
+        });
+    }
+
     getScreenshotMethodHtml2Canvas() {
         return new Promise((resolve) => {
             let currentScrollPos = window.pageYOffset;
@@ -1177,55 +1201,64 @@ class Feedybacky {
     }
 
     initializeDrawing(image) {
-        if(this.screenshotModification.canvas) {
+        if (this.screenshotModification.canvas) {
             this.screenshotModification.ctx.clearRect(0, 0, this.screenshotModification.canvas.width, this.screenshotModification.canvas.height);
         }
-
+    
         const canvasContainer = document.getElementById('feedybacky-canvas-container');
-        var myCanvas = document.createElement('canvas');
-        myCanvas.id = 'can'
-
-        myCanvas.width = window.innerWidth * 0.8;
-        myCanvas.height = window.innerHeight * 0.8 * (document.body.clientWidth / window.innerWidth);
-        
+        document.querySelectorAll('#feedybacky-canvas-container #can').forEach(e => e.remove());
+        const myCanvas = document.createElement('canvas');
+        myCanvas.id = 'can';
+    
         const context = myCanvas.getContext('2d');
-
+    
         const baseImage = new Image();
         baseImage.src = image;
-        
+    
         baseImage.onload = () => {
             this.screenshotModification.baseImage = baseImage;
+
+            const aspectRatio = baseImage.width / baseImage.height;
+            myCanvas.width = canvasContainer.offsetWidth * 0.99;
+            myCanvas.height = myCanvas.width / aspectRatio;
+
             context.drawImage(baseImage, 0, 0, myCanvas.width, myCanvas.height);
-        }
 
-        canvasContainer.prepend(myCanvas);
-        canvasContainer.style.height = `${myCanvas.height}px`;
+            canvasContainer.append(myCanvas);
+            canvasContainer.style.height = `${myCanvas.height}px`;
 
-        this.screenshotModification.canvas = document.getElementById('can');
-        this.screenshotModification.ctx = this.screenshotModification.canvas.getContext('2d');
-    
-        this.screenshotModification.canvas.addEventListener('mousemove', (e) => {
-            this.findXYOnScreenshot('move', e)
-        }, false);
-        this.screenshotModification.canvas.addEventListener('mousedown', (e) => {
-            this.findXYOnScreenshot('down', e)
-        }, false);
-        this.screenshotModification.canvas.addEventListener('mouseup', (e) => {
-            this.findXYOnScreenshot('up', e)
-        }, false);
-        this.screenshotModification.canvas.addEventListener('mouseout', (e) => {
-            this.findXYOnScreenshot('out', e)
-        }, false);
+            this.screenshotModification.canvas = myCanvas;
+            this.screenshotModification.ctx = context;
+
+            this.screenshotModification.canvas.addEventListener('mousemove', (e) => {
+                this.findXYOnScreenshot('move', e);
+            }, false);
+            this.screenshotModification.canvas.addEventListener('mousedown', (e) => {
+                this.findXYOnScreenshot('down', e);
+            }, false);
+            this.screenshotModification.canvas.addEventListener('mouseup', (e) => {
+                this.findXYOnScreenshot('up', e);
+            }, false);
+            this.screenshotModification.canvas.addEventListener('mouseout', (e) => {
+                this.findXYOnScreenshot('out', e);
+            }, false);
+        };
     }
 
-
-
     findXYOnScreenshot(eventType, e) {
-        if (eventType == 'down') {
+        const modalContent = document.querySelector('#feedybacky-screen-modification-modal .modal-content');
+    
+        const canvasRect = this.screenshotModification.canvas.getBoundingClientRect();
+
+        const relativeX = e.clientX - canvasRect.left + modalContent.scrollLeft;
+        const relativeY = e.clientY - canvasRect.top + modalContent.scrollTop;
+    
+        if (eventType === 'down') {
             this.screenshotModification.prevX = this.screenshotModification.currX;
             this.screenshotModification.prevY = this.screenshotModification.currY;
-            this.screenshotModification.currX = e.clientX - this.screenshotModification.canvas.offsetLeft;
-            this.screenshotModification.currY = e.clientY - this.screenshotModification.canvas.offsetTop;
+    
+            this.screenshotModification.currX = relativeX;
+            this.screenshotModification.currY = relativeY;
     
             this.screenshotModification.flag = true;
             this.screenshotModification.dotFlag = true;
@@ -1237,15 +1270,19 @@ class Feedybacky {
                 this.screenshotModification.dotFlag = false;
             }
         }
-        if (eventType == 'up' || eventType == 'out') {
+    
+        if (eventType === 'up' || eventType === 'out') {
             this.screenshotModification.flag = false;
         }
-        if (eventType == 'move') {
+    
+        if (eventType === 'move') {
             if (this.screenshotModification.flag) {
                 this.screenshotModification.prevX = this.screenshotModification.currX;
                 this.screenshotModification.prevY = this.screenshotModification.currY;
-                this.screenshotModification.currX = e.clientX - this.screenshotModification.canvas.offsetLeft;
-                this.screenshotModification.currY = e.clientY - this.screenshotModification.canvas.offsetTop;
+    
+                this.screenshotModification.currX = relativeX;
+                this.screenshotModification.currY = relativeY;
+    
                 this.drawOnScreenshot();
             }
         }
@@ -1281,6 +1318,10 @@ class Feedybacky {
                 this.getScreenshotMethodMediaDevice().then((image) => {
                     resolve(image);
                 });
+            } else if (this.screenshotMethod == screenshotMethodDomToImage) {
+                this.getScreenshotMethodDomToImage().then((image) => {
+                    resolve(image);
+                });
             }
         });
     }
@@ -1303,6 +1344,7 @@ class Feedybacky {
             this.importCssFile(`${this.basePath}/css/feedybacky.min.css`);
 
             this.importJsFile(`${this.basePath}/dependencies/html2canvas/html2canvas.min.js`);
+            this.importJsFile(`${this.basePath}/dependencies/domtoimage/dom-to-image.min.js`);
         }
     }
 
