@@ -907,14 +907,13 @@ class Feedybacky {
                 bgcolor: 'white'
             })
             .then(dataUrl => {
-                navigator.clipboard.writeText(dataUrl);
                 window.scrollTo(0, currentScrollPos);
 
                 resolve(dataUrl);
             })
             .catch(error => {
                 console.error('Error capturing screenshot with dom-to-image:', error);
-                reject(error);
+                resolve(null);
             });
         });
     }
@@ -1225,7 +1224,7 @@ class Feedybacky {
             context.drawImage(baseImage, 0, 0, myCanvas.width, myCanvas.height);
 
             canvasContainer.append(myCanvas);
-            canvasContainer.style.height = `${myCanvas.height}px`;
+            canvasContainer.style.height = `${myCanvas.height + 70}px`;
 
             this.screenshotModification.canvas = myCanvas;
             this.screenshotModification.ctx = context;
