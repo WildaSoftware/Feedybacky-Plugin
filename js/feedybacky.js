@@ -334,6 +334,15 @@ class Feedybacky {
                 return false;
             };
 
+            // overlapping console.error to collect logs
+            const originalConsoleError = console.error;
+
+            // Nadpisujemy metodę własną funkcją
+            console.error = (...args) => {
+                this.consoleErrors.push(args.join(' | '));
+                originalConsoleError.apply(console, args);
+            };
+
             if ([checkboxVisibleOption, checkboxAutoEnableOption].includes(this.params.historyField)) {
                 this.initEventHistoryGathering();
             }
