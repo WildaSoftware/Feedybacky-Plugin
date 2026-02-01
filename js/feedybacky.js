@@ -336,8 +336,6 @@ class Feedybacky {
 
             // overlapping console.error to collect logs
             const originalConsoleError = console.error;
-
-            // Nadpisujemy metodę własną funkcją
             console.error = (...args) => {
                 this.consoleErrors.push(args.join(' | '));
                 originalConsoleError.apply(console, args);
@@ -518,6 +516,14 @@ class Feedybacky {
         }
 
         this.screenshotMethod = screenshotMethod;
+    }
+
+    setProjectSymbol(projectSymbol) {
+        this.params.projectSymbol = projectSymbol;
+    }
+
+    getProjectSymbol() {
+        return this.params.projectSymbol;
     }
 
     initMinifiedContainer() {

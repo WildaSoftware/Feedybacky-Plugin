@@ -34,6 +34,11 @@
 				<button id="button-nonexistent-error">Make disaster!</button>
 				<button id="button-division-error">Make bigger disaster!</button>
 			</p>
+
+			<p>
+				<input type="text" id="project-symbol" placeholder="Project symbol">
+				<button id="button-get-symbol">Get symbol</button>
+			</p>
 		</div>
 
 		<div id="feedybacky-container"></div>
@@ -42,6 +47,7 @@
 		<script>
 			var feedybacky = new Feedybacky('feedybacky-container', {
 				onSubmitUrl: 'backend/api.php',
+				projectSymbol: 'Wilda Software Contact Box',
                 closesAfterOutsideClick: false
 			});
 
@@ -68,6 +74,14 @@
 			document.getElementById('button-division-error').addEventListener('click', function() {
 				throw new Error('Oh no, you tried to divide by zero!');
 			});
+
+			document.getElementById('project-symbol').addEventListener('change', function() {
+				feedybacky.setProjectSymbol(this.value);
+			})
+
+			document.getElementById('button-get-symbol').addEventListener('click', function() {
+				document.getElementById('project-symbol').value = feedybacky.getProjectSymbol();
+			})
 		</script>
 	</body>
 </html>
