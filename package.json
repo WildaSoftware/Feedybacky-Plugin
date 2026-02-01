@@ -1,24 +1,25 @@
 {
-  "name": "feedybacky",
-  "version": "2.3.2",
-  "description": "Feedybacky - JS plugin to facilitate feedback requests from users on web pages.",
-  "main": "",
-  "scripts": {
-    "gulp": "gulp"
-  },
-  "keywords": [
-    "feedback",
-    "frontend",
-    "request"
-  ],
-  "author": "Wilda Software Sp. z o.o.",
-  "license": "MIT",
-  "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-csso": "^3.0.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-sass": "^5.0.0",
-    "gulp-terser": "^2.1.0",
-    "sass": "^1.37.5"
-  }
+    "name": "feedybacky",
+    "version": "2.3.2",
+    "description": "Feedybacky - JS plugin to facilitate feedback requests from users on web pages.",
+    "main": "",
+    "scripts": {
+        "gulp": "gulp",
+        "watch": "gulp watch"
+    },
+    "keywords": [
+        "feedback",
+        "frontend",
+        "request"
+    ],
+    "author": "Wilda Software Sp. z o.o.",
+    "license": "MIT",
+    "devDependencies": {
+        "gulp": "^4.0.2",
+        "gulp-csso": "^3.0.1",
+        "gulp-rename": "^1.4.0",
+        "gulp-sass": "^5.0.0",
+        "gulp-terser": "^2.1.0",
+        "sass": "^1.37.5"
+    }
 }

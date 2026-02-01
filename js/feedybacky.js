@@ -118,6 +118,8 @@ class Feedybacky {
             this.params.side = 'right';
         }
 
+        this.params.closesAfterOutsideClick = !('closesAfterOutsideClick' in this.params) || this.params.closesAfterOutsideClick === true || this.params.closesAfterOutsideClick === 'true';
+
         if (this.params.order) {
             const orderSplit = this.params.order.replace(/\s/g, '').split(',');
             const newOrderSplit = [];
@@ -211,6 +213,15 @@ class Feedybacky {
             document.getElementById('feedybacky-container-hide-button').addEventListener('click', e => {
                 this.close();
             });
+
+            if(this.params.closesAfterOutsideClick) {
+                window.addEventListener('click', (e) => {
+                    if(!document.getElementById('feedybacky-container-extended').contains(e.target) 
+                            && !document.getElementById('feedybacky-container-minified').contains(e.target)) {
+                        this.close();
+                    }
+                });
+            }
 
             if (this.params.onSubmit) {
                 document.getElementById('feedybacky-form').addEventListener('submit', this.params.onSubmit);
