@@ -526,6 +526,14 @@ class Feedybacky {
         return this.params.projectSymbol;
     }
 
+    setIssuer(issuer) {
+        this.params.issuer = issuer;
+    }
+
+    getIssuer() {
+        return this.params.issuer;
+    }
+
     initMinifiedContainer() {
         this.minifiedContainer = document.createElement('div');
         this.minifiedContainer.id = 'feedybacky-container-minified';
@@ -840,6 +848,10 @@ class Feedybacky {
 
         if (this.params.projectSymbol) {
             payload.projectSymbol = this.params.projectSymbol;
+        }
+
+        if (this.params.issuer) {
+            payload.issuer = this.params.issuer;
         }
 
         const screenshotAllowedInput = document.getElementById('feedybacky-form-screenshot-allowed');

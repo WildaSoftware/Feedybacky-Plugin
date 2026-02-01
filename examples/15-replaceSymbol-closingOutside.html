@@ -39,6 +39,9 @@
 				<input type="text" id="project-symbol" placeholder="Project symbol">
 				<button id="button-get-symbol">Get symbol</button>
 			</p>
+			<p>
+				<input type="text" id="author" placeholder="Issuer">
+			</p>
 		</div>
 
 		<div id="feedybacky-container"></div>
@@ -48,6 +51,7 @@
 			var feedybacky = new Feedybacky('feedybacky-container', {
 				onSubmitUrl: 'backend/api.php',
 				projectSymbol: 'Wilda Software Contact Box',
+				issuer: 'Happy user of Feedybacky',
                 closesAfterOutsideClick: false
 			});
 
@@ -81,6 +85,10 @@
 
 			document.getElementById('button-get-symbol').addEventListener('click', function() {
 				document.getElementById('project-symbol').value = feedybacky.getProjectSymbol();
+			})
+
+			document.getElementById('author').addEventListener('change', function() {
+				feedybacky.setIssuer(this.value);
 			})
 		</script>
 	</body>
