@@ -155,6 +155,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
 * **visitedUrls** - array of objects with last N visited URLs withing the site. Available only if the parameter `urlTracking` is enabled.
+* **issuer** - string with name of an user sending a request.
 
 `apiKey` - API key generated for your Feedybacky account in the portal. You can retrieve it from the portal on the edit account view under the "API key" section. Setting this parameter is obligatory if you want to send request to the Feedybacky portal. If this and `projectSymbol` are set, the value of `onSubmitUrl` is replaced by the official Feedybacky portal endpoint.
 
@@ -271,6 +272,10 @@ beforeSubmit: (payload) => {
 
 `activeMessageType` - optional parameter for selecting a first, default message type. It has to be present in `availableMessageTypes` array. Otherwise or by default the value is set to first element of `availableMessageTypes` array (mostly `text`).
 
+`closesAfterOutsideClick` - optional parameter to control if the extended form would be closed after clicking outside. Default value is `true`.
+
+`issuer` - optional parameter to set initial issuer of the request. In most situations it is an user detected by the host of the Feedybacky's plugin instance.
+
 ### Methods ###
 
 After creating the Feedybacky object, some methods could be invoked on it:
@@ -282,6 +287,14 @@ After creating the Feedybacky object, some methods could be invoked on it:
 `setTheme(themeSymbol)` - change the current theme. For example, calling `setTheme('dark')` changes the theme to dark in runtime. If given theme is not allowed, the current theme stays.
 
 `setScreenshotMethod(screenshotMethod)` - change the current screenshot method, for example after detecting a user's browser type. For more information, please check description of `screenshotMethod` parameter.
+
+`setProjectSymbol(projectSymbol)` - change the `projectSymbol` value.
+
+`getProjectSymbol` - get the current `projectSymbol` value.
+
+`setIssuer(issuer)` - change the `issuer` value.
+
+`getIssuer` - get the current `issuer` value.
 
 ### Wrappers ###
 

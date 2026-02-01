@@ -1,3 +1,12 @@
+Version 2.4 (2026-02-01)
+========================
+
+1. Introducing parameter "closesAfterOutsideClick" and closing the extended form after clicking outside.
+2. Project symbol can be set (and get) in runtime.
+3. Issuer can be sent and modified in runtime.
+4. Errors in JS console should be sent properly.
+5. (for development) Script to run Gulp in watch mode.
+
 Version 2.3.2 (2025-03-28)
 ========================
 
