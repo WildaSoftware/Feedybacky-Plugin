@@ -24,6 +24,8 @@
     "termsAcceptedErrorNotChecked": "You have to accept this because the request would be sent to Feedybacky portal.",
     "personalDataAcceptedErrorNotChecked": "You have to accept this because the request would be sent to Feedybacky portal.",
     "category": "Provide a request's category:",
+    "role": "Limit the request's visibility to the role:",
+    "roleAll": "All",
     "priority": "Provide a request's priority:",
     "priorityMedium": "Medium",
     "priorityHigh": "High",

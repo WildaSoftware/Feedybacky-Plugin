@@ -18,12 +18,13 @@ const orderPersonalDataAcceptedCheckboxPart = 'personalDataAccepted';
 const orderNotePart = 'note';
 const orderCategoryPart = 'category';
 const orderPriorityPart = 'priority';
-const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
+const orderRolePart = 'role';
+const orderParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderRolePart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart, orderNotePart];
 
 const orderTitlePart = 'title';
 const orderSendPart = 'send';
 const orderPoweredPart = 'powered';
-const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
+const containerParts = [orderDescriptionPart, orderMessagePart, orderEmailPart, orderCategoryPart, orderRolePart, orderPriorityPart, orderExplanationPart, orderScreenshotCheckboxPart, orderMetadataCheckboxPart, orderHistoryCheckboxPart, orderNotePart, orderTitlePart, orderSendPart, orderPoweredPart, orderTermsAcceptedCheckboxPart, orderPersonalDataAcceptedCheckboxPart];
 
 const alertTypeSuccess = 'success';
 const alertTypeFailure = 'error';
@@ -47,6 +48,8 @@ const messageTypeVoice = 'voice';
 const allowedMessageTypes = [messageTypeText, messageTypeVoice];
 
 const messageAudioMaxLength = 10000;
+
+const allowedRoles = ['manager', 'client'];
 
 class FeedybackyPayload {
 
@@ -131,7 +134,7 @@ class Feedybacky {
             }
             this.params.order = newOrderSplit.join(',');
         } else {
-            this.params.order = 'description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
+            this.params.order = 'description,message,email,category,role,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note';
         }
 
         if (typeof this.params.alertAfterRequest !== 'boolean') {
@@ -153,6 +156,15 @@ class Feedybacky {
         }
 
         this.params.categories = params.categories || [];
+
+        this.params.roles = (params.roles || []).filter(option => {
+            if (option && allowedRoles.includes(option.value)) {
+                return true;
+            }
+
+            console.warn(`Feedybacky ignores role option with value "${option ? option.value : option}". Allowed values: ${allowedRoles.join(', ')}.`);
+            return false;
+        });
 
         if (typeof this.params.adBlockDetected === 'undefined') {
             let adBlockBait = document.createElement('div');
@@ -624,6 +636,21 @@ class Feedybacky {
             `;
         }
 
+        let roleSelectHtml = '';
+        if (this.params.roles.length > 0) {
+            let roleOptions = `<option value="" selected="selected">${this.params.texts.roleAll}</option>`;
+            for (const option of this.params.roles) {
+                roleOptions += `<option value="${option['value']}">${option['label']}</option>`;
+            }
+
+            roleSelectHtml = `
+                <div id="feedybacky-container-role-description" class="${this.params.classes.role}">${this.params.texts.role}</div>
+                <select name="role" id="feedybacky-form-role" form="feedybacky-form" class="${this.params.classes.role}">
+                    ${roleOptions}
+                </select>
+            `;
+        }
+
         let prioritySelectHtml = '';
         if (this.params.priorityField) {
             prioritySelectHtml = `
@@ -690,6 +717,7 @@ class Feedybacky {
         extendedParts[orderExplanationPart] = `${additionalDataInformationHtml}`;
         extendedParts[orderEmailPart] = `${emailInputHtml}`;
         extendedParts[orderCategoryPart] = `${categorySelectHtml}`;
+        extendedParts[orderRolePart] = `${roleSelectHtml}`;
         extendedParts[orderPriorityPart] = `${prioritySelectHtml}`;
         extendedParts[orderScreenshotCheckboxPart] = `${screenshotCheckboxHtml}`;
         extendedParts[orderMetadataCheckboxPart] = `${metadataCheckboxHtml}`;
@@ -811,6 +839,7 @@ class Feedybacky {
         const messageAudioInput = this.messageAudio;
         const emailInput = document.getElementById('feedybacky-form-email');
         const categorySelect = document.getElementById('feedybacky-form-category');
+        const roleSelect = document.getElementById('feedybacky-form-role');
         const prioritySelect = document.getElementById('feedybacky-form-priority');
 
         let payload = new FeedybackyPayload();
@@ -832,6 +861,10 @@ class Feedybacky {
 
         if (categorySelect) {
             payload.category = categorySelect.value;
+        }
+
+        if (roleSelect && roleSelect.value) {
+            payload.role = roleSelect.value;
         }
 
         if (prioritySelect) {

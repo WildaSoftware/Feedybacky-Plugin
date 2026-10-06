@@ -24,6 +24,8 @@
     "termsAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky.",
     "personalDataAcceptedErrorNotChecked": "Musisz to zaakceptować, ponieważ zgłoszenie zostanie wysłane do portalu Feedybacky.",
     "category": "Podaj kategorię zgłoszenia:",
+    "role": "Ogranicz widoczność zgłoszenia do roli:",
+    "roleAll": "Wszystkie",
     "priority": "Podaj priorytet zgłoszenia:",
     "priorityMedium": "Średni",
     "priorityHigh": "Wysoki",
