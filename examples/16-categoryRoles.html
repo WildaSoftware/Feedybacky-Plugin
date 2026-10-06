@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Feedybacky - example page</title>
+		<meta name="description" content="The HTML5 Herald">
+		<meta name="author" content="SitePoint">
+
+		<link rel="stylesheet" href="assets/styles.css">
+	</head>
+	<body>
+		<nav>
+			<img src="../img/icon.png"/>
+			<a href="https://github.com/WildaSoftware/Feedybacky" target="_blank">Github</a>
+			<a href="https://www.npmjs.com/package/feedybacky" target="_blank">NPM</a>
+			<a href="https://wildasoftware.pl/" target="_blank">Wilda Software</a>
+			<a href="https://feedybacky.com/" target="_blank">Feedybacky.com</a>
+		</nav>
+
+		<div class="container">
+			<div class="title">Feedybacky example page</div>
+			<div class="description">
+				This page is a template and a playground for testing Feedybacky plugin. Feel free to experiment and enjoy!
+				<br/>
+				This example shows possibility of selecting a category and limiting a request to a role. The role select contains the default "All" option, which does not limit the request to any role.
+			</div>
+		</div>
+
+		<div id="feedybacky-container"></div>
+
+		<script type="text/javascript" src="../js/feedybacky.min.js"></script>
+		<script>
+			var feedybacky = new Feedybacky('feedybacky-container', {
+				onSubmitUrl: 'backend/api.php',
+				categories: [
+					{ label: 'Suggestion', value: 'suggest' },
+					{ label: 'Issue', value: 'error' },
+				],
+				roles: [
+					{ label: 'Managers only (internal)', value: 'manager' },
+					{ label: 'Clients only', value: 'client' },
+				]
+			});
+		</script>
+	</body>
+</html>

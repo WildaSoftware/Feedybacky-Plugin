@@ -151,6 +151,7 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **extraInfo** - JSON object with extra parameters passed by the callback function. Available only if extra data callback was defined.
 * **email** - e-mail address provided by the user if available (the appropriate field is visible).
 * **category** - value of the category selected by the user if available (the appropriate field is visible).
+* **role** - symbol of the role (`manager` or `client`) to which the request's visibility should be limited. Sent only if the role field is visible and the user selected a specific role (not "All").
 * **priority** - value of priority ("medium" or "high") selected by the user if available (the appropriate field is visible).
 * **prefix** - prefix defined for the Feedybacky instance (if defined).
 * **adBlock** - information if an enabled AdBlock browser plugin can be detected. It can have value 1 or 0.
@@ -191,6 +192,8 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 * **termsAcceptedErrorNotChecked** - error message when terms and conditions have been not accepted while the plugin is paired with the Feedybacky portal.
 * **personalDataAcceptedErrorNotChecked** - error message when user has not confirm information about personal data processing while the plugin is paired with the Feedybacky portal.
 * **category** - label before the category field.
+* **role** - label before the role field.
+* **roleAll** - label of the default role option, which does not limit the request to any role.
 * **priority** - label before the priority field.
 * **modifyScreenshot** - label for the link for screenshot modification.
 * **working** - label displayed when work is in progress (during modified screenshot generation).
@@ -214,6 +217,17 @@ In Feedybacky constructor, next to ID of empty div, a JSON object with parameter
 categories: [
 	{ label: 'Suggestion', value: 'suggest' },
 	{ label: 'Issue', value: 'error' },
+],
+```
+
+Categories are defined on the frontend side only - they are not fetched from the Feedybacky portal. When the plugin is paired with the Feedybacky portal, `value` should be equal to the symbol of a category defined in the project. If there is no category with such symbol in the project, the request is still created, but without a category.
+
+`roles` - optional parameter for array of role options presented for the user. It allows to limit the visibility of a request to users with the selected role in the project (e.g. selecting `manager` makes the request internal). If this parameter is omitted or empty, the select with role is not visible and no role is sent with a request. Each element of this array should be a JSON object with two keys: `label` and `value`, where `value` must be one of: `manager`, `client` (other options are ignored). The select always contains an additional first option "All" (label can be changed by `roleAll` text), which is selected by default and does not limit the request to any role. E.g.:
+
+```ts
+roles: [
+	{ label: 'Managers only', value: 'manager' },
+	{ label: 'Clients only', value: 'client' },
 ],
 ```
 
@@ -254,9 +268,9 @@ beforeSubmit: (payload) => {
 
 `side` - optional parameter for determining side of the Feedybacky. Default value is `right` and means that the plugin is visible on the right side of the website. Another possible value is `left`.
 
-`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,category,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
+`order` - optional parameter passing an order of the form elements. It should contain specific element identifiers divided by commas and can be also use to hide some parts. Default value is `"description,message,email,category,role,priority,explanation,screenshot,metadata,history,termsAccepted,personalDataAccepted,note"`. 
 
-`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, category, priority, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
+`classes` - optional parameter which can be used to pass JSON object with keys as element identifiers and values with class names list for such element. Available keywords are `title, description, message, email, category, role, priority, explanation, screenshot, metadata, history, termsAccepted, personalDataAccepted, note, send, powered`.
 
 `expandMessageLink` - optional parameter to make expand link visible. If it is correct, the link is present under message input and causes expanding the message area and the whole form. The default value is `false`.
 
